@@ -4,21 +4,24 @@ import { redirect } from "next/navigation";
 import getSession from "./get-session-cache";
 import db from '@/db/drizzle';
 import { user } from '@/db/schema/auth-schema';
-import { eq } from 'drizzle-orm';
+import { eq, ne } from 'drizzle-orm';
 
 
-export async function getUsers() {
+export async function getOtherUsers() {
   const session = await getSession();
   if (!session) {
     redirect('/login');
   }
+
+  const thisId = session.user.id;
 
   const result = await db
     .select({
       name: user.name,
       id: user.id
     })
-    .from(user);
+    .from(user)
+    .where(ne(user.id, thisId));
 
   return result;
 }

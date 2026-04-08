@@ -2,6 +2,7 @@
 
 import useFeedbackText from "@/hooks/feedback";
 import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 import { ChangeEvent, useState } from "react"
 
 export default function Login() {
@@ -55,11 +56,12 @@ export default function Login() {
           onChange={changeFromData}
         />
       </form>
-      <p className={`text-error text-center ${feedbackText ? 'visible' : 'invisible'}`}>{feedbackText || 'feedback text'}</p>
+      <p className={`text-error text-center text-base ${feedbackText ? 'visible' : 'invisible'}`}>{feedbackText || 'feedback text'}</p>
       <button
         className="bg-bg-light px-4 py-2 block mx-auto mt-1 border rounded-md border-border cursor-pointer hover:bg-border transition"
         onClick={login}
       >Log in</button>
+      <Link href="/register" className="text-link mx-auto w-max block mt-2">Do not have an account? Register</Link>
     </div>
   )
 }

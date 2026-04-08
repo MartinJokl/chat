@@ -2,6 +2,7 @@
 
 import useFeedbackText from "@/hooks/feedback";
 import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 import { ChangeEvent, useState } from "react"
 
 export default function Register() {
@@ -34,7 +35,14 @@ export default function Register() {
       callbackURL: "/",
     });
     if (error) {
-      ChangeFeedbackText(error.message ?? 'Error')
+      if (error.code === 'VALIDATION_ERROR') {
+        if (error.message?.startsWith('[body.email]')) {
+          ChangeFeedbackText(('Invalid email'))
+        }
+        else if (error.message?.startsWith('[body.password]')) {
+          ChangeFeedbackText(('Invalid password'))
+        }
+      }
     }
   }
 
@@ -83,11 +91,12 @@ export default function Register() {
           onChange={changeFromData}
         />
       </form>
-      <p className={`text-error text-center ${feedbackText ? 'visible' : 'invisible'}`}>{feedbackText || 'feedback text'}</p>
+      <p className={`text-error text-center text-base ${feedbackText ? 'visible' : 'invisible'}`}>{feedbackText || 'feedback text'}</p>
       <button
         className="bg-bg-light px-4 py-2 block mx-auto mt-1 border rounded-md border-border cursor-pointer hover:bg-border transition"
         onClick={register}
       >Register</button>
+      <Link href="/login" className="text-link mx-auto w-max block mt-2">Have an accoutn already? Log in</Link>
     </div>
   )
 }

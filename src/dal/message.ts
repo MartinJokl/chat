@@ -24,7 +24,8 @@ export async function getGlobalMessages() {
     })
     .from(message)
     .where(isNull(message.reciever))
-    .leftJoin(user, eq(message.sender, user.id));
+    .leftJoin(user, eq(message.sender, user.id))
+    .orderBy(message.createdAt);
 
   return result;
 }
@@ -55,7 +56,8 @@ export async function getMessages(otherPerson: string) {
         eq(message.reciever, thisPerson)
       ),
     ))
-    .leftJoin(user, eq(message.sender, user.id));;
+    .leftJoin(user, eq(message.sender, user.id))
+    .orderBy(message.createdAt);
 
   return result;
 }
