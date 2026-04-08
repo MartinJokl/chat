@@ -1,21 +1,70 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-dark: hsl(0, 0%, 5%);
+  --bg: hsl(0, 0%, 10%);
+  --bg-light: hsl(0, 0%, 15%);
+
+  --text: hsl(0, 0%, 95%);
+  --text-muted: hsl(0, 0%, 65%);
+
+  --border: hsl(0, 0%, 30%);
+  --highlight: hsl(0, 0%, 45%);
+
+  --primary: hsl(171, 100%, 65%);
+  --primary-muted: hsl(171, 100%, 19%);
+  --primary-bg: hsl(170, 100%, 10%);
+
+  --link: hsl(218, 100%, 65%);
+  --error: hsl(0, 96%, 67%);
+  --error-muted: hsl(0, 96%, 20%);
+  --error-bg: hsl(0, 40%, 15%);
+  --success: hsl(115, 100%, 68%);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg-dark:var(--bg-dark);
+  --color-bg: var(--bg);
+  --color-bg-light: var(--bg-light);
+
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+
+  --color-border: var(--border);
+  --color-highlight: var(--highlight);
+
+  --color-primary: var(--primary);
+  --color-primary-muted: var(--primary-muted);
+  --color-primary-bg: var(--primary-bg);
+
+  --color-link: var(--link);
+  --color-error: var(--error);
+  --color-error-muted: var(--error-muted);
+  --color-error-bg: var(--error-bg);
+  --color-success: var(--success);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg-dark: hsl(0, 0%, 90%);
+    --bg: hsl(0, 0%, 95%);
+    --bg-light: hsl(0, 0%, 100%);
+
+    --text: hsl(0, 0%, 5%);
+    --text-muted: hsl(0, 0%, 35%);
+
+    --border: hsl(0, 0%, 70%);
+    --highlight: hsl(0, 0%, 75%);
+    
+    --primary: hsl(171, 100%, 29%);
+    --primary-muted: hsl(171, 80%, 60%);
+    --primary-bg: hsl(171, 100%, 90%);
+
+    --link: hsl(218, 100%, 35%);
+    --error: hsl(0, 89%, 45%);
+    --error-muted: hsl(0, 96%, 83%);
+    --error-bg: hsl(0, 100%, 93%);
+    --success: hsl(115, 100%, 30%);
   }
 }
 
