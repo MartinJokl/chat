@@ -67,3 +67,7 @@
     --success: hsl(115, 100%, 30%);
   }
 }
+
+.dark-scrollbar {
+    scrollbar-color: rgb(73, 73, 73) transparent;
+}

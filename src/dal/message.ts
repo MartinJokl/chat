@@ -2,9 +2,10 @@ import 'server-only';
 
 import db from "@/db/drizzle";
 import { message } from "@/db/schema/schema";
-import { and, isNull, or, eq, sql } from "drizzle-orm";
+import { and, isNull, or, eq } from "drizzle-orm";
 import getSession from './get-session-cache';
 import { redirect } from 'next/navigation';
+import { user } from '@/db/schema/auth-schema';
 
 
 export async function getGlobalMessages() {
@@ -16,12 +17,14 @@ export async function getGlobalMessages() {
   const result = await db
     .select({
       sender: message.sender,
+      senderName: user.name,
       content: message.content,
       createdAt: message.createdAt,
-      id: message.id
+      id: message.id,
     })
     .from(message)
-    .where(isNull(message.reciever));
+    .where(isNull(message.reciever))
+    .leftJoin(user, eq(message.sender, user.id));
 
   return result;
 }
@@ -37,7 +40,9 @@ export async function getMessages(otherPerson: string) {
     .select({
       content: message.content,
       createdAt: message.createdAt,
-      sender: message.sender
+      sender: message.sender,
+      senderName: user.name,
+      id: message.id
     })
     .from(message)
     .where(or(
@@ -49,7 +54,8 @@ export async function getMessages(otherPerson: string) {
         eq(message.sender, otherPerson),
         eq(message.reciever, thisPerson)
       ),
-    ));
+    ))
+    .leftJoin(user, eq(message.sender, user.id));;
 
   return result;
 }
