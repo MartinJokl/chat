@@ -38,10 +38,10 @@ export async function getMessages(otherPerson: string) {
 
   const result = await db
     .select({
-      content: message.content,
-      createdAt: message.createdAt,
       sender: message.sender,
       senderName: user.name,
+      content: message.content,
+      createdAt: message.createdAt,
       id: message.id
     })
     .from(message)

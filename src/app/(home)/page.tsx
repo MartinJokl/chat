@@ -1,13 +1,26 @@
-
-import GlobalMessageContainer from '@/components/GlobalMessageContainer'
-import MessageInput from '@/components/MessageInput';
+import { getUsers } from "@/dal/user";
+import Link from "next/link";
 
 export default async function Home() {
+  const users = await getUsers();
+
+  const chats = [{
+    name: 'Global chat',
+    id: 'global'
+  }, ...users]
+
   return (
-    <div className='h-screen flex flex-col p-8 w-300 mx-auto'>
-      <h1 className="text-center mt-8 text-2xl mb-12">Global chat</h1>
-      <GlobalMessageContainer />
-      <MessageInput reciever={null} />
-    </div>
+    <>
+      <h1 className="text-3xl font-bold text-center mt-8 mb-12">Select chatter</h1>
+      <div className="w-200 flex flex-col mx-auto">
+        {chats.map(chat => (
+          <Link
+            key={chat.id}
+            href={`/chat/${chat.id}`}
+            className="text-center text-xl bg-bg hover:bg-bg-light m-2 p-4"
+          >{chat.name}</Link>
+        ))}
+      </div>
+    </>
   );
 }
