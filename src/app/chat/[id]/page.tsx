@@ -13,9 +13,14 @@ export default async function Chat({
 
   const id = (await params).id
 
-  const recieverName = (id === 'global') ? 'Global chat' : (await getUser(id));
+  const reciever = (id === 'global')
+    ? {
+      name: 'Global chat',
+      email: 'Everyone can chat here'
+    }
+    : (await getUser(id));
 
-  if (recieverName === null) {
+  if (reciever === null) {
     return notFound();
   }
 
@@ -27,7 +32,8 @@ export default async function Chat({
       >Back</Link>
 
       <div className='h-screen flex flex-col p-8 w-300 mx-auto'>
-        <h1 className="text-center text-2xl mb-12">{recieverName}</h1>
+        <h1 className="text-center text-2xl">{reciever.name}</h1>
+        <p className='text-center text-text-muted mb-12'>{reciever.email}</p>
         <MessageContainer reciever={id === 'global' ? null : id} />
         <MessageInput reciever={id === 'global' ? null : id} />
       </div>

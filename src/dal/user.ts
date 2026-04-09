@@ -18,7 +18,8 @@ export async function getOtherUsers() {
   const result = await db
     .select({
       name: user.name,
-      id: user.id
+      id: user.id,
+      email: user.email
     })
     .from(user)
     .where(ne(user.id, thisId));
@@ -35,7 +36,7 @@ export async function getUser(id: string) {
   const result = await db
     .select({
       name: user.name,
-      id: user.id
+      email: user.email
     })
     .from(user)
     .where(eq(user.id, id));
@@ -44,5 +45,5 @@ export async function getUser(id: string) {
     return null;
   }
 
-  return result[0].name;
+  return result[0];
 }

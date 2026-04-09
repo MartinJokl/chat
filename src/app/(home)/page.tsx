@@ -7,7 +7,8 @@ export default async function Home() {
 
   const chats = [{
     name: 'Global chat',
-    id: 'global'
+    id: 'global',
+    email: 'Everyone can chat here'
   }, ...users]
 
   return (
@@ -19,8 +20,11 @@ export default async function Home() {
           <Link
             key={chat.id}
             href={`/chat/${chat.id}`}
-            className="text-center text-xl bg-bg hover:bg-bg-light m-2 p-4 rounded-2xl transition"
-          >{chat.name}</Link>
+            className="text-center bg-bg hover:bg-bg-light m-2 p-4 rounded-2xl transition"
+          >
+            <h3 className="text-xl">{chat.name}</h3>
+            <p className="text-text-muted">{chat.email}</p>
+          </Link>
         ))}
       </div>
     </>
