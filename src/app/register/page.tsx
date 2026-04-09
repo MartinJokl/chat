@@ -3,6 +3,7 @@
 import useFeedbackText from "@/hooks/feedback";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ChangeEvent, useState } from "react"
 
 export default function Register() {
@@ -24,7 +25,7 @@ export default function Register() {
 
   async function register() {
     if (formData.password !== formData.verificationPassword) {
-      ChangeFeedbackText('Password do not match');
+      ChangeFeedbackText('Passwords do not match');
       return;
     }
 
@@ -32,17 +33,23 @@ export default function Register() {
       email: formData.email,
       name: formData.name,
       password: formData.password,
-      callbackURL: "/",
+    }, {
+      onSuccess: () => {
+        redirect('/');
+      }
     });
     if (error) {
       if (error.code === 'VALIDATION_ERROR') {
         if (error.message?.startsWith('[body.email]')) {
-          ChangeFeedbackText(('Invalid email'))
+          ChangeFeedbackText(('Invalid email'));
+          return;
         }
         else if (error.message?.startsWith('[body.password]')) {
-          ChangeFeedbackText(('Invalid password'))
+          ChangeFeedbackText(('Invalid password'));
+          return;
         }
       }
+      ChangeFeedbackText(error.message ?? 'Error');
     }
   }
 
