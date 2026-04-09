@@ -2,11 +2,10 @@ import 'server-only';
 
 import db from "@/db/drizzle";
 import { message } from "@/db/schema/schema";
-import { and, isNull, or, eq } from "drizzle-orm";
+import { and, isNull, or, eq, sql } from "drizzle-orm";
 import getSession from './get-session-cache';
 import { redirect } from 'next/navigation';
 import { user } from '@/db/schema/auth-schema';
-
 
 export async function getGlobalMessages() {
   const session = await getSession();
@@ -19,8 +18,8 @@ export async function getGlobalMessages() {
       sender: message.sender,
       senderName: user.name,
       content: message.content,
-      createdAt: message.createdAt,
       id: message.id,
+      createdAtUTC: sql<Date>`CONVERT_TZ(created_at, @@session.time_zone, '+00:00')`.mapWith(message.createdAt)
     })
     .from(message)
     .where(isNull(message.reciever))
@@ -42,8 +41,8 @@ export async function getMessages(otherPerson: string) {
       sender: message.sender,
       senderName: user.name,
       content: message.content,
-      createdAt: message.createdAt,
-      id: message.id
+      id: message.id,
+      createdAtUTC: sql<Date>`CONVERT_TZ(message.created_at, @@session.time_zone, '+00:00')`.mapWith(message.createdAt)
     })
     .from(message)
     .where(or(
