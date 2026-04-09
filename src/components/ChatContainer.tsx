@@ -23,7 +23,7 @@ export default function ChatContainer({ reciever, initialMessagesPromise }: { re
       if (isRecievingMessage(message)) {
         console.log(reciever)
         console.log(message.reciever)
-        if (!((reciever === 'global' && message.reciever === null) || (message.reciever === userId && reciever !== 'global') || message.sender === userId)) {
+        if (!((reciever === 'global' && message.reciever === null) || (message.reciever === userId && reciever === message.sender) || message.sender === userId)) {
           return;
         }
         setMessages(messages => [

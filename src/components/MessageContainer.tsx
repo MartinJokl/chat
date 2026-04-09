@@ -1,16 +1,24 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { RecievingMessage } from "../types/message";
 import { Fragment } from "react/jsx-runtime";
 
 
 export default function MessageContainer({ messages, userId }: { messages: RecievingMessage[], userId: string | undefined }) {
-
   const milisecondsToShowTimeAgain = 1000 * 60 * 30;
   const milisecondsToShowDate = 1000 * 60 * 60 * 24;
 
+  const scrollableContainerRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const containerElem = scrollableContainerRef.current;
+    if (containerElem) {
+      containerElem.scrollTop = containerElem.scrollHeight;
+    }
+  }, [messages]);
+
   return (
-    <div className="flex-1 overflow-auto dark-scrollbar flex flex-col">
+    <div className="flex-1 overflow-auto dark-scrollbar flex flex-col" ref={scrollableContainerRef}>
       {messages.map((message, index) => {
         return (
           <Fragment key={message.id}>
