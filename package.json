@@ -2,10 +2,11 @@
   "name": "chat",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "node --env-file=.env src/server.ts",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node --env-file=.env src/server.ts",
     "lint": "eslint"
   },
   "dependencies": {
@@ -14,13 +15,15 @@
     "mysql2": "^3.20.0",
     "next": "16.2.2",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "ws": "^8.20.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/ws": "^8.18.1",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",

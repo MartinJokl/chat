@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import * as authSchema from './schema/auth-schema';
-import * as mySchema from './schema/schema';
+import * as authSchema from './schema/auth-schema.ts';
+import * as mySchema from './schema/schema.ts';
 
 const schema = {
   ...authSchema,

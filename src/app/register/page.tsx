@@ -1,7 +1,7 @@
 "use client"
 
-import useFeedbackText from "@/hooks/feedback";
-import { authClient } from "@/lib/auth-client";
+import useFeedbackText from "../../hooks/feedback";
+import { authClient } from "../../lib/auth-client";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ChangeEvent, useState } from "react"

@@ -1,13 +1,12 @@
 "use client";
 
-import { sendMessage } from "@/actions/send-message";
 import { useState, type KeyboardEvent } from "react";
 
-export default function MessageInput({ reciever }: { reciever: string | null }) {
+export default function MessageInput({ sendMessage }: { sendMessage: (content: string) => void }) {
   const [message, setMessage] = useState('');
 
   async function send() {
-    sendMessage(reciever, message);
+    sendMessage(message);
     setMessage('');
   }
 

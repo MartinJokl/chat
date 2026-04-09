@@ -1,11 +1,10 @@
-import 'server-only';
 
-import db from "@/db/drizzle";
-import { message } from "@/db/schema/schema";
+import db from "../db/drizzle.ts";
+import { message } from "../db/schema/schema.ts";
 import { and, isNull, or, eq, sql } from "drizzle-orm";
-import getSession from './get-session-cache';
+import getSession from './get-session-cache.ts';
 import { redirect } from 'next/navigation';
-import { user } from '@/db/schema/auth-schema';
+import { user } from '../db/schema/auth-schema.ts';
 
 export async function getGlobalMessages() {
   const session = await getSession();
@@ -19,7 +18,8 @@ export async function getGlobalMessages() {
       senderName: user.name,
       content: message.content,
       id: message.id,
-      createdAtUTC: sql<Date>`CONVERT_TZ(created_at, @@session.time_zone, '+00:00')`.mapWith(message.createdAt)
+      createdAtUTC: sql<Date>`CONVERT_TZ(message.created_at, @@session.time_zone, '+00:00')`.mapWith(message.createdAt),
+      reciever: message.reciever
     })
     .from(message)
     .where(isNull(message.reciever))
@@ -42,7 +42,8 @@ export async function getMessages(otherPerson: string) {
       senderName: user.name,
       content: message.content,
       id: message.id,
-      createdAtUTC: sql<Date>`CONVERT_TZ(message.created_at, @@session.time_zone, '+00:00')`.mapWith(message.createdAt)
+      createdAtUTC: sql<Date>`CONVERT_TZ(message.created_at, @@session.time_zone, '+00:00')`.mapWith(message.createdAt),
+      reciever: message.reciever
     })
     .from(message)
     .where(or(
@@ -59,20 +60,4 @@ export async function getMessages(otherPerson: string) {
     .orderBy(message.createdAt);
 
   return result;
-}
-
-export async function createMessage(reciever: string | null, content: string) {
-  const session = await getSession();
-  if (!session) {
-    redirect('/login');
-  }
-  const thisPerson = session.user.id;
-
-  await db
-    .insert(message)
-    .values({
-      sender: thisPerson,
-      reciever,
-      content
-    })
 }

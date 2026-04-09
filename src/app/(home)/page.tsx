@@ -1,5 +1,5 @@
-import LogOutSection from "@/components/LogOutSection";
-import { getOtherUsers } from "@/dal/user";
+import LogOutSection from "../../components/LogOutSection";
+import { getOtherUsers } from "../../dal/user";
 import Link from "next/link";
 
 export default async function Home() {

@@ -1,5 +1,5 @@
 import { int, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
-import { user } from "./auth-schema";
+import { user } from "./auth-schema.ts";
 
 
 export const message = mysqlTable('message', {

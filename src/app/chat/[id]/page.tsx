@@ -1,9 +1,10 @@
 
-import MessageContainer from '@/components/MessageContainer'
-import MessageInput from '@/components/MessageInput';
-import { getUser } from '@/dal/user';
+import ChatContainer from '../../../components/ChatContainer';
+import { getGlobalMessages, getMessages } from '../../../dal/message';
+import { getUser } from '../../../dal/user';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default async function Chat({
   params
@@ -11,18 +12,20 @@ export default async function Chat({
   params: Promise<{ id: string }>
 }) {
 
-  const id = (await params).id
+  const recieverId = (await params).id
 
-  const reciever = (id === 'global')
+  const reciever = (recieverId === 'global')
     ? {
       name: 'Global chat',
       email: 'Everyone can chat here'
     }
-    : (await getUser(id));
+    : (await getUser(recieverId));
 
   if (reciever === null) {
     return notFound();
   }
+
+  const messages = recieverId === 'global' ? getGlobalMessages() : getMessages(recieverId);
 
   return (
     <>
@@ -34,8 +37,9 @@ export default async function Chat({
       <div className='h-screen flex flex-col p-8 w-300 mx-auto'>
         <h1 className="text-center text-2xl">{reciever.name}</h1>
         <p className='text-center text-text-muted mb-12'>{reciever.email}</p>
-        <MessageContainer reciever={id === 'global' ? null : id} />
-        <MessageInput reciever={id === 'global' ? null : id} />
+        <Suspense fallback={<p>Loading messages...</p>} >
+          <ChatContainer reciever={recieverId} initialMessagesPromise={messages} />
+        </Suspense>
       </div>
     </>
   );

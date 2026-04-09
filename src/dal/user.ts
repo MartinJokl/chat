@@ -2,8 +2,8 @@ import 'server-only';
 
 import { redirect } from "next/navigation";
 import getSession from "./get-session-cache";
-import db from '@/db/drizzle';
-import { user } from '@/db/schema/auth-schema';
+import db from '../db/drizzle';
+import { user } from '../db/schema/auth-schema';
 import { eq, ne } from 'drizzle-orm';
 
 

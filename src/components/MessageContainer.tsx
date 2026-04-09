@@ -1,13 +1,10 @@
-import getSession from "@/dal/get-session-cache";
-import { getGlobalMessages, getMessages } from "@/dal/message";
+"use client";
+
+import { RecievingMessage } from "../types/message";
 import { Fragment } from "react/jsx-runtime";
 
 
-export default async function MessageContainer({ reciever }: { reciever: string | null }) {
-
-  const session = await getSession();
-
-  const messages = await (reciever === null ? getGlobalMessages() : getMessages(reciever));
+export default function MessageContainer({ messages, userId }: { messages: RecievingMessage[], userId: string | undefined }) {
 
   const milisecondsToShowTimeAgain = 1000 * 60 * 30;
   const milisecondsToShowDate = 1000 * 60 * 60 * 24;
@@ -26,7 +23,7 @@ export default async function MessageContainer({ reciever }: { reciever: string 
                 </p>
               )}
             <div
-              className={`${message.sender === session?.user.id ? 'ml-auto text-right' : ''} w-max max-w-[80%]`}
+              className={`${message.sender === userId ? 'ml-auto text-right' : ''} w-max max-w-[80%]`}
             >
               {(index === 0 || messages[index - 1].sender !== message.sender)
                 && (
@@ -34,7 +31,7 @@ export default async function MessageContainer({ reciever }: { reciever: string 
                 )}
 
               <div
-                className={`${message.sender === session?.user.id ? 'bg-primary-muted' : 'bg-bg-light'}  mb-2 px-4 py-2 rounded-md overflow-hidden`}
+                className={`${message.sender === userId ? 'bg-primary-muted' : 'bg-bg-light'}  mb-2 px-4 py-2 rounded-md overflow-hidden`}
               >{message.content}</div>
             </div>
           </Fragment>
