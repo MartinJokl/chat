@@ -23,8 +23,6 @@ nextApp.prepare().then(() => {
   const wss = new WebSocketServer({ noServer: true });
 
   wss.on('connection', (ws: UserWebSocket) => {
-    console.log(`someone connected to ws server: ${ws.userId}`);
-
     ws.on('message', async data => {
       const message = JSON.parse(data.toString());
       if (isSendingMessage(message)) {
@@ -55,8 +53,6 @@ nextApp.prepare().then(() => {
     }
 
     if (pathname === "/messages") {
-      console.log(req.headers.cookie);
-
       const headers = toHeaders(req.headers);
 
       const session = await auth.api.getSession({
