@@ -1,21 +1,38 @@
-import { eq, sql } from "drizzle-orm";
+import { and, eq, isNull, or, sql } from "drizzle-orm";
 import db from "../db/drizzle.ts";
 import { message } from "../db/schema/schema.ts";
 import { user } from "../db/schema/auth-schema.ts";
+import { auth } from "../lib/auth.ts";
 
 
-export async function createMessageUnauthed(sender: string, reciever: string | null, content: string) {
+export async function createMessage(headers: Headers, reciever: string | null, content: string) {
+  const session = await auth.api.getSession({
+    headers
+  })
+  if (!session) {
+    return;
+  }
+  const userId = session.user.id;
+
   const result = await db
     .insert(message)
     .values({
-      sender,
+      sender: userId,
       reciever,
       content
     });
   return result[0].insertId;
 }
 
-export async function getMessageByIdUnauthed(id: number) {
+export async function getMessageById(headers: Headers, id: number) {
+  const session = await auth.api.getSession({
+    headers
+  })
+  if (!session) {
+    return;
+  }
+  const userId = session.user.id;
+
   const result = await db
     .select({
       sender: message.sender,
@@ -26,7 +43,14 @@ export async function getMessageByIdUnauthed(id: number) {
       reciever: message.reciever
     })
     .from(message)
-    .where(eq(message.id, id))
+    .where(and(
+      eq(message.id, id),
+      or(
+        eq(message.sender, userId),
+        eq(message.reciever, userId),
+        isNull(message.reciever)
+      )
+    ))
     .leftJoin(user, eq(message.sender, user.id))
     .orderBy(message.createdAt);
   if (result.length === 0) {

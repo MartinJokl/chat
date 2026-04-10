@@ -2,7 +2,7 @@ import { createServer } from 'http'
 import next from 'next'
 import { WebSocketServer, WebSocket } from 'ws';
 import { isSendingMessage } from './types/message.ts';
-import { createMessageUnauthed, getMessageByIdUnauthed } from './dal/unauthed-message.ts';
+import { createMessage, getMessageById } from './dal/custom-header-message.ts';
 import { auth } from './lib/auth.ts';
 
 const port = parseInt(process.env.PORT || '3000', 10)
@@ -10,8 +10,9 @@ const dev = process.env.NODE_ENV !== 'production'
 const nextApp = next({ dev })
 const handle = nextApp.getRequestHandler()
 
-interface UserIdWebSocket extends WebSocket {
-  userId: string
+interface UserWebSocket extends WebSocket {
+  userId: string,
+  headers: Headers // save headers to auth later when sending messages
 }
 
 nextApp.prepare().then(() => {
@@ -21,22 +22,25 @@ nextApp.prepare().then(() => {
 
   const wss = new WebSocketServer({ noServer: true });
 
-  wss.on('connection', (ws: UserIdWebSocket) => {
+  wss.on('connection', (ws: UserWebSocket) => {
     console.log(`someone connected to ws server: ${ws.userId}`);
 
     ws.on('message', async data => {
       const message = JSON.parse(data.toString());
       if (isSendingMessage(message)) {
-        const newMessageId = await createMessageUnauthed(ws.userId, message.reciever, message.content);
-        const newMessage = await getMessageByIdUnauthed(newMessageId);
+        const newMessageId = await createMessage(ws.headers, message.reciever, message.content);
+        if (!newMessageId) {
+          return;
+        }
+        const newMessage = await getMessageById(ws.headers, newMessageId);
         if (!newMessage) {
           return;
         }
-        wss.clients.forEach((sendingWs: WebSocket) => {
-          const sendingUserIdWs = sendingWs as UserIdWebSocket;
+        wss.clients.forEach((recievingWs: WebSocket) => {
+          const recievingUserWs = recievingWs as UserWebSocket;
 
-          if (message.reciever === null || sendingUserIdWs.userId === message.reciever || sendingUserIdWs.userId === ws.userId) {
-            sendingWs.send(JSON.stringify(newMessage));
+          if (message.reciever === null || recievingUserWs.userId === message.reciever || recievingUserWs.userId === ws.userId) {
+            recievingWs.send(JSON.stringify(newMessage));
           }
         })
       }
@@ -63,9 +67,11 @@ nextApp.prepare().then(() => {
         return;
       }
       wss.handleUpgrade(req, socket, head, (ws) => {
-        const userIdWs = ws as UserIdWebSocket;
-        userIdWs.userId = session.user.id;
-        wss.emit('connection', userIdWs, req);
+        const userWs = ws as UserWebSocket;
+        userWs.userId = session.user.id;
+        userWs.headers = headers;
+
+        wss.emit('connection', userWs, req);
       });
 
     }
