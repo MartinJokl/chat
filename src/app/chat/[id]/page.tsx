@@ -37,7 +37,7 @@ export default async function Chat({
       <div className='h-screen flex flex-col p-8 w-300 mx-auto'>
         <h1 className="text-center text-2xl">{reciever.name}</h1>
         <p className='text-center text-text-muted mb-12'>{reciever.email}</p>
-        <Suspense fallback={<p>Loading messages...</p>} >
+        <Suspense fallback={<p className="text-center">Loading messages...</p>} >
           <ChatContainer reciever={recieverId} initialMessagesPromise={messages} />
         </Suspense>
       </div>
